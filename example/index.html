@@ -13,7 +13,6 @@
     <script src="js/circuit.js" type="text/javascript"></script>
 		<script src="js/jquery.js" type="text/javascript"></script>
     <script src="js/jquery-ui.min.js" type="text/javascript"></script>
-		<script src="js/jcanvas.min.js" type="text/javascript"></script>
 </head>
 <body>
 	<div class="header">
@@ -51,6 +50,8 @@
 				</div>
 				<div class="toolbar-item measurement" data-gate-type="measurement">
 				</div>
+				<div class="toolbar-item grovers" data-gate-type="grovers">
+				</div>
 			</div>
 		</div>
 	</div>
@@ -59,6 +60,8 @@
 		<img id="x-icon" src="images/x-icon.png">
 		<img id="z-icon" src="images/z-icon.png">
 		<img id="measurement-icon" src="images/measurement-icon.png">
+		<img id="fx-icon" src="images/fx-icon.png">
+		<img id="diff-icon" src="images/diff-icon.png">
 	</div>
 	
 	<div id="qubit-dialog" title="Select Qubits" style="display: none">
@@ -73,6 +76,13 @@
 					
 					<input type="checkbox" id="checkboxG3" class="css-checkbox list-input" checked />
 					<label for="checkboxG3" class="css-label radGroup3" checked>Qubit 3</label><br /><br />
+			</div>
+	</div>
+	
+	<div id="grovers-dialog" title="Grovers Algorithm" style="display: none">
+	    <div class="content" style="margin-left: 23px;">
+	        <p id="qubit-dialog-message">Which state would you like to search for?  Enter in this format: 011</p>
+					<input type="text" id="txtGroverTarget" />
 			</div>
 	</div>
 	
@@ -111,6 +121,34 @@
 			promptQubits("Select Qubits", "Which qubits would you like to measure?", function(qubits) {
 				qubitSystem.measure(qubits);
 				_circuit.drawMeasurement(qubitCount, qubits);
+				updateSystemStatus();
+			});
+		});
+		
+		$(".grovers").click(function() {
+			promptGrovers(function(targetComponent) {
+				qubitSystem = _qubit.systemWithNewQubits(qubitCount);
+				_circuit.reset();
+				
+				var qubitList = [];
+				for(var i = 0; i < qubitCount; i++) {
+					qubitList.push(i+1);
+				}
+				
+				var oracleMatrix = QuantumGates.buildGroverOracleMatrix(qubitCount, targetComponent);
+				var diffusionMatrix = QuantumGates.buildDiffusionMatrix(qubitCount);
+				var iterations = Math.floor((Math.PI/4) * Math.sqrt(Math.pow(2, qubitCount)));
+				
+				qubitSystem.applyHadamardGate();
+				_circuit.drawHadamardGate(qubitCount, qubitList);
+				
+				for(var i = 0; i < iterations; i++) {
+					qubitSystem.applyMatrix(oracleMatrix);
+					_circuit.drawFunctionOperation(qubitCount, qubitList);
+				  qubitSystem.applyMatrix(diffusionMatrix);
+				  _circuit.drawDiffusionOperation(qubitCount, qubitList);
+				}
+				
 				updateSystemStatus();
 			});
 		});
@@ -159,6 +197,46 @@
 		        }
 		    }
 		});
+	}
+		
+		function promptGrovers(callback) {
+			$("#txtGroverTarget").text("");
+
+			$("#grovers-dialog").dialog({
+			    modal: true,
+			    draggable: false,
+			    resizable: false,
+			    position: { my: "center", at: "center", of: window },
+			    width: 400,
+			    dialogClass: 'ui-dialog-osx',
+			    buttons: {
+			        "Go": function() {
+									var target = $("#txtGroverTarget").val();
+									var validated = true;
+									
+									if(target.length != qubitCount) {
+										validated = false;
+									}
+									else {
+										for(var i = 0; i < qubitCount; i++) {
+											if(target[i] != "0" && target[i] != "1") {
+												validated = false;
+												break;
+											}
+										}
+									}
+									
+									if(validated) {
+										$(this).dialog("close");
+										callback(target);
+									}
+									else {
+										$("#txtGroverTarget").val("");
+										alert("Please enter a valid state for Grover's algorithm to search for.  Example: '011'");
+									}
+			        }
+			    }
+			});
 	}
 	</script>
 </body>

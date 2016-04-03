@@ -14,6 +14,10 @@ window._circuit = {
 		strokeStyle: "#000",
 		strokeWidth: 1,
 	},
+	reset: function() {
+		this.gateCounter = 0;
+		this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height);
+	},
 	drawHadamardGate: function(qubitCount, qubits) {
 		var image = document.getElementById("h-icon");
 		this.drawGate(qubitCount, qubits, image);
@@ -28,6 +32,14 @@ window._circuit = {
 	},
 	drawMeasurement: function(qubitCount, qubits) {
 		var image = document.getElementById("measurement-icon");
+		this.drawGate(qubitCount, qubits, image);
+	},
+	drawFunctionOperation: function(qubitCount, qubits) {
+		var image = document.getElementById("fx-icon");
+		this.drawGate(qubitCount, qubits, image);
+	},
+	drawDiffusionOperation: function(qubitCount, qubits) {
+		var image = document.getElementById("diff-icon");
 		this.drawGate(qubitCount, qubits, image);
 	},
 	drawGate: function(qubitCount, qubits, image) {

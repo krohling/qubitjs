@@ -107,6 +107,18 @@ Simulating qubits in JavaScript.  [Live example.](http://kevinrohling.com/qc/qua
   // |100>
   ```
 
+### Running Grover's Algorithm
+
+  ```js
+  console.log(qubitSystem.toString());
+  // |000>
+
+  qubitSystem.runGroversAlgorithm("011");
+
+  console.log(qubitSystem.toString());
+  // -0.088 |000> + -0.088 |001> + -0.088 |010> + 0.972 |011> + -0.088 |100> + -0.088 |101> + -0.088 |110> + -0.088 |111>
+  ```
+
 ### Credits
 
   Qubit JS uses the [Math.js](https://github.com/josdejong/mathjs) library.

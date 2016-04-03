@@ -150,6 +150,10 @@ body {
 	background-image: url('../images/measurement-background.png');
 }
 
+.builder .content .toolbar .grovers {
+	background-image: url('../images/grovers-background.png');
+}
+
 .ui-dialog .ui-dialog-titlebar {
 	background: #302b42;
 	color: #fff;

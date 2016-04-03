@@ -23,27 +23,6 @@ var QuantumGates = {
 		
 		return this.buildMatrix(this.iMatrix, targetQubits);
 	},
-	buildMatrix: function (baseMatrix, targetQubits) {
-		var resultMatrix;
-		
-		if(targetQubits[0]) {
-			resultMatrix = baseMatrix;
-		}
-		else {
-			resultMatrix = this.iMatrix;
-		}
-		
-		for(var i = 1; i < targetQubits.length; i++) {
-			if(targetQubits[i]) {
-				resultMatrix = this.tensor(resultMatrix, baseMatrix);
-			}
-			else {
-				resultMatrix = this.tensor(resultMatrix, this.iMatrix);
-			}
-		}
-		
-		return resultMatrix;
-	},
 	buildCNOTMatrix: function(qubitCount, controlQubit, targetQubit) {
 		var componentCount = Math.pow(2, qubitCount);
 		
@@ -67,6 +46,57 @@ var QuantumGates = {
 		}
 		
 		return this.buildMatrixFromTruthTable(truthTable);
+	},
+	buildDiffusionMatrix: function(qubitCount) {
+		var matrix = [];
+		var n = Math.pow(2, qubitCount);
+		var v1 = 2/n;
+		var v2 = v1-1;
+		
+		for(var i = 0; i < n; i++) {
+			matrix.push([]);
+		}
+		
+		for(var i = 0; i < n; i++) {
+			for(var j = 0; j < n; j++) {
+				if(i == j) {
+					matrix[i].push(v2);
+				}
+				else {
+					matrix[i].push(v1);
+				}
+			}
+		}
+		
+		return matrix;
+	},
+	buildGroverOracleMatrix: function(qubitCount, targetState) {
+		var matrix = this.buildIdentityMatrix(qubitCount);
+		var targetValue = this.fromBinaryString(targetState);
+		matrix[targetValue][targetValue] = -1;
+		
+		return matrix;
+	},
+	buildMatrix: function (baseMatrix, targetQubits) {
+		var resultMatrix;
+		
+		if(targetQubits[0]) {
+			resultMatrix = baseMatrix;
+		}
+		else {
+			resultMatrix = this.iMatrix;
+		}
+		
+		for(var i = 1; i < targetQubits.length; i++) {
+			if(targetQubits[i]) {
+				resultMatrix = this.tensor(resultMatrix, baseMatrix);
+			}
+			else {
+				resultMatrix = this.tensor(resultMatrix, this.iMatrix);
+			}
+		}
+		
+		return resultMatrix;
 	},
 	buildMatrixFromTruthTable: function(truthTable) {
 		var length = truthTable.length;
@@ -101,6 +131,16 @@ var QuantumGates = {
 			}
 			
 			result.push(row);
+		}
+		
+		return result;
+	},
+	fromBinaryString: function(str) {
+		var result = 0;
+		for(var i = 0; i < str.length; i++) {
+			if(str[str.length-(i+1)] == "1") {
+				result += Math.pow(2, i);
+			}
 		}
 		
 		return result;
@@ -239,6 +279,18 @@ var QubitSystem = {
 			applyIdentityGate: function() {
 				var matrix = QuantumGates.buildIdentityMatrix(qubitCount);
 				this.applyMatrix(matrix);
+			},
+			runGroversAlgorithm: function(targetComponent) {
+				var oracleMatrix = QuantumGates.buildGroverOracleMatrix(this.qubitCount, targetComponent);
+				var diffusionMatrix = QuantumGates.buildDiffusionMatrix(this.qubitCount);
+				var iterations = Math.floor((Math.PI/4) * Math.sqrt(Math.pow(2, this.qubitCount)));
+				
+				this.applyHadamardGate();
+				
+				for(var i = 0; i < iterations; i++) {
+					this.applyMatrix(oracleMatrix);
+				    this.applyMatrix(diffusionMatrix);
+				}
 			},
 			measure: function(qubits) {
 				console.log(qubits);
