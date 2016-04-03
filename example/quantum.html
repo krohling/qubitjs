@@ -1,0 +1,165 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+		<meta charset="utf-8">
+		<title>Quantum Circuit Builder</title>
+		<link href='https://fonts.googleapis.com/css?family=Lato:300,400,700,900' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="css/style.css" type="text/css">
+		<link rel="stylesheet" href="css/jquery-ui.min.css" type="text/css">
+		<link rel="stylesheet" href="css/jquery-ui.structure.min.css" type="text/css">
+		<link rel="stylesheet" href="css/jquery-ui.theme.min.css" type="text/css">
+    <script src="js/math.js" type="text/javascript"></script>
+    <script src="js/qubit.js" type="text/javascript"></script>
+    <script src="js/circuit.js" type="text/javascript"></script>
+		<script src="js/jquery.js" type="text/javascript"></script>
+    <script src="js/jquery-ui.min.js" type="text/javascript"></script>
+		<script src="js/jcanvas.min.js" type="text/javascript"></script>
+</head>
+<body>
+	<div class="header">
+		<label>Quantum Circuit Builder</label>
+	</div>
+	<div class="system-state">
+		<div class="title">
+			<h2>Welcome to your own 3-Qubit Quantum System.</h2>
+			<h3>Add operations like quantum gates and measurements from the Toolbar below to build a circuit.</h3>
+		</div>
+		<div class="output">
+			<h2 id="system-state-output">|000></h2>
+		</div>
+	</div>
+	<div class="builder">
+		<div class="header">
+			<div class="circuit">
+				<h2>Quantum Circuit</h2>
+			</div>
+			<div class="toolbar">
+				<h2>Toolbar</h2>
+			</div>
+		</div>
+		<div class="content">
+			<div class="circuit">
+				<canvas id="circuit-canvas" style="width: 549px;height: 530px;" width="549px" height="530px">
+				</canvas>
+			</div>
+			<div class="toolbar">
+				<div class="toolbar-item hadamard" data-gate-type="hadamard">
+				</div>
+				<div class="toolbar-item phase-shift-x" data-gate-type="phase-shift-x">
+				</div>
+				<div class="toolbar-item phase-shift-z" data-gate-type="phase-shift-z">
+				</div>
+				<div class="toolbar-item measurement" data-gate-type="measurement">
+				</div>
+			</div>
+		</div>
+	</div>
+	<div style="display: none">
+		<img id="h-icon" src="images/h-icon.png">
+		<img id="x-icon" src="images/x-icon.png">
+		<img id="z-icon" src="images/z-icon.png">
+		<img id="measurement-icon" src="images/measurement-icon.png">
+	</div>
+	
+	<div id="qubit-dialog" title="Select Qubits" style="display: none">
+	    <div class="content" style="margin-left: 23px;">
+	        <p id="qubit-dialog-message"></p>
+	
+					<input type="checkbox" id="checkboxG1" class="css-checkbox list-input" checked />
+					<label for="checkboxG1" class="css-label radGroup1" checked>Qubit 1</label><br /><br />
+					
+					<input type="checkbox" id="checkboxG2" class="css-checkbox list-input" checked />
+					<label for="checkboxG2" class="css-label radGroup2" checked>Qubit 2</label><br /><br />
+					
+					<input type="checkbox" id="checkboxG3" class="css-checkbox list-input" checked />
+					<label for="checkboxG3" class="css-label radGroup3" checked>Qubit 3</label><br /><br />
+			</div>
+	</div>
+	
+	<script type="text/javascript">
+	var qubitCount = 3;
+	var qubitSystem = _qubit.systemWithNewQubits(qubitCount);
+	
+	$(function() {
+		_circuit.initialize(document.getElementById("circuit-canvas").getContext("2d"));
+		
+		$(".hadamard").click(function() {
+			promptQubits("Select Qubits", "Which qubits would you like to apply this Hadamard gate to?", function(qubits) {
+				qubitSystem.applyHadamardGate(qubits);
+				_circuit.drawHadamardGate(qubitCount, qubits);
+				updateSystemStatus();
+			});
+		});
+		
+		$(".phase-shift-x").click(function() {
+			promptQubits("Select Qubits", "Which qubits would you like to apply this X Phase Shift gate to?", function(qubits) {
+				qubitSystem.applyXPhaseShiftGate(qubits);
+				_circuit.drawXPhaseShiftGate(qubitCount, qubits);
+				updateSystemStatus();
+			});
+		});
+		
+		$(".phase-shift-z").click(function() {
+			promptQubits("Select Qubits", "Which qubits would you like to apply this Z Phase Shift gate to?", function(qubits) {
+				qubitSystem.applyZPhaseShiftGate(qubits);
+				_circuit.drawZPhaseShiftGate(qubitCount, qubits);
+				updateSystemStatus();
+			});
+		});
+		
+		$(".measurement").click(function() {
+			promptQubits("Select Qubits", "Which qubits would you like to measure?", function(qubits) {
+				qubitSystem.measure(qubits);
+				_circuit.drawMeasurement(qubitCount, qubits);
+				updateSystemStatus();
+			});
+		});
+		
+	});
+	
+	function updateSystemStatus() {
+		var status = qubitSystem.toString();
+		$("#system-state-output").text(status);
+	}
+	</script>
+	
+	<script>
+	function promptQubits(title, message, callback) {
+		$("#checkboxG1").toArray()[0].checked = true;
+		$("#checkboxG2").toArray()[0].checked = true;
+		$("#checkboxG3").toArray()[0].checked = true;
+		
+		$("#qubit-dialog-message").text(message);
+		$("#qubit-dialog").dialog({
+		    modal: true,
+		    draggable: false,
+		    resizable: false,
+		    position: { my: "center", at: "center", of: window },
+		    width: 400,
+				title: title,
+		    dialogClass: 'ui-dialog-osx',
+		    buttons: {
+		        "Apply": function() {
+								var qubits = [];
+								
+								if($("#checkboxG1").toArray()[0].checked) {
+									qubits.push(1);
+								}
+								
+								if($("#checkboxG2").toArray()[0].checked) {
+									qubits.push(2);
+								}
+								
+								if($("#checkboxG3").toArray()[0].checked) {
+									qubits.push(3);
+								}
+			
+								$(this).dialog("close");
+								callback(qubits);
+		        }
+		    }
+		});
+	}
+	</script>
+</body>
+</html>

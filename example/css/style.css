@@ -1,0 +1,204 @@
+body {
+    margin: 0;
+    height: 100%;
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+	min-width: 800px
+}
+
+.header {
+    width: 100%;
+    height: 48px;
+    max-height: 48px;
+    background: #302b42;
+    padding: 6px 20px
+}
+
+.header label {
+	font-family: 'Lato', sans-serif;
+	color: #fff;
+	font-size: 18pt;
+}
+
+.system-state {
+	text-align: center;
+	font-family: 'Lato', sans-serif;
+}
+
+.system-state .title {
+	text-align: center;
+	font-family: 'Lato', sans-serif;
+	border-bottom: .5px solid #536266;
+}
+
+.system-state .title h2 {
+	font-size: 18pt;
+	margin-bottom: 0px;
+	font-family: 'Lato', sans-serif;
+}
+
+.system-state .title h3 {
+	font-size: 10pt;
+	margin-top: 8px;
+	font-family: 'Lato', sans-serif;
+}
+
+.system-state .output {
+	height: 100px;
+	width: 800px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.system-state .output h2 {
+	margin: 0px;
+	margin-top: 20px;
+	font-size: 20pt;
+}
+
+.builder {
+	padding: 0px;
+	margin-bottom: 50px;
+	margin-left: auto;
+	margin-right: auto;
+	width: 800px;
+	height: 600px;
+	border: .5px solid #536266;
+}
+
+.builder .header {
+    background: #302b42;
+	height: 50px;
+	color: #fff;
+	margin: 0px;
+	padding: 0px;
+}
+
+.builder .header h2 {
+    margin-top: 8px;
+	font-family: 'Lato', sans-serif;
+}
+
+.builder .header .circuit {
+	width: 549px;
+	float: left;
+	text-align: center;
+	margin: 0px;
+	padding: 0px;
+}
+
+.builder .header .toolbar {
+	width: 250px;
+	float: right;
+	text-align: center;
+	border-left: .5px solid #fff;
+	margin: 0px;
+	padding: 0px;
+}
+
+.builder .content .circuit {
+	float: left;
+	margin: 0px;
+	padding: 0px;
+	width: 549px;
+	height: 530px;
+}
+
+.builder .content .toolbar {
+	float: right;
+	margin: 0px;
+	padding: 0px;
+	width: 250px;
+	height: 530px;
+	border-left: .5px solid #536266;
+}
+
+.builder .content .toolbar {
+	
+}
+
+.builder .content .toolbar .toolbar-item {
+	margin: 10px;
+	height: 80px;
+	width: 230px;
+	text-align: center;
+	border: .5px solid #536266;
+	cursor: pointer;
+}
+
+.builder .content .toolbar .toolbar-item label {
+	font-size: 12pt;
+	font-family: 'Lato', sans-serif;
+	font-weight: 800;
+}
+
+.builder .content .toolbar .hadamard {
+	background-image: url('../images/h-background.png');
+}
+
+.builder .content .toolbar .phase-shift-x {
+	background-image: url('../images/x-background.png');
+}
+
+.builder .content .toolbar .phase-shift-z {
+	background-image: url('../images/z-background.png');
+}
+
+.builder .content .toolbar .measurement {
+	background-image: url('../images/measurement-background.png');
+}
+
+.ui-dialog .ui-dialog-titlebar {
+	background: #302b42;
+	color: #fff;
+}
+
+.ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-close {
+	display: none;
+}
+
+
+
+
+
+
+
+
+#qubit-dialog .content input[type=checkbox].css-checkbox {
+    position: absolute;
+    z-index: -1000;
+    left: -1000px;
+    overflow: hidden;
+    clip: rect(0);
+    height: 1px;
+    width: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0
+}
+#qubit-dialog .content input[type=checkbox].css-checkbox+label.css-label,
+#qubit-dialog .content input[type=checkbox].css-checkbox+label.css-label.clr {
+    padding-left: 34px;
+    height: 24px;
+    display: inline-block;
+    line-height: 24px;
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    vertical-align: middle;
+    cursor: pointer
+}
+#qubit-dialog .content input[type=checkbox].css-checkbox:checked+label.css-label,
+#qubit-dialog .content input[type=checkbox].css-checkbox+label.css-label.chk {
+    background-position: 0 -24px
+}
+#qubit-dialog .content label.css-label {
+    background-image: url(images/checkbox.png);
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none
+}
