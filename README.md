@@ -1,6 +1,6 @@
 #Welcome to Qubit JS
 
-Simulating qubits in JavaScript.  [Live example.](http://kevinrohling.com/qc/quantum.html)
+Simulating qubits in JavaScript.  [Live example.](http://kevinrohling.com/qc)
 
 #Usage
 
